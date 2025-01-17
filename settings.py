@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from dataclasses import dataclass
+from database.database import create_table
 
 @dataclass
 class Bots:
@@ -12,8 +13,9 @@ class Bots:
 class Settings:
     bots: Bots
 
+
 def get_settings():
-    
+
     load_dotenv()
     
     return Settings(
@@ -24,3 +26,4 @@ def get_settings():
     )
 
 settings = get_settings()
+create_table()

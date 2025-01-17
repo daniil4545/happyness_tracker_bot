@@ -2,7 +2,8 @@ import os
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher
-from handlers.basic import get_start
+from aiogram.filters import Command
+from handlers.basic import get_start, get_happiness
 from settings import settings
 
 
@@ -19,7 +20,8 @@ async def start():
     bot = Bot(token=settings.bots.bot_token)
     dp = Dispatcher()
 
-    dp.message.register(get_start)
+    dp.message.register(get_start, Command('start'))
+    dp.message.register(get_happiness)
 
     dp.startup.register(start_bot)
     dp.shutdown.register(stop_bot)
