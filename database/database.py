@@ -36,6 +36,11 @@ def get_weekly_count(user_id):
     cursor.execute('SELECT COUNT(*) FROM happiness_log WHERE user_id = ? AND timestamp >= DATE(\'now\', \'-7 days\')', (user_id,))
     return cursor.fetchone()[0]
 
+# Функция для получения количества записей за неделю
+def get_monthly_count(user_id):
+    cursor.execute('SELECT COUNT(*) FROM happiness_log WHERE user_id = ? AND timestamp >= DATE(\'now\', \'-30 days\')', (user_id,))
+    return cursor.fetchone()[0]
+
 # Функция для получения самого счастливого дня в неделе
 def get_happiest_day_in_week(user_id):
     cursor.execute('''
@@ -50,7 +55,8 @@ def get_happiest_day_in_week(user_id):
     if result:
         date, count = result
         weekday = datetime.strptime(date, '%Y-%m-%d').strftime('%A')
-        return date, weekday, count
+        formatted_date = datetime.strptime(date, '%Y-%m-%d').strftime('%d.%m.%Y')
+        return f"{weekday}, {formatted_date}"
     return None
 
 # Функция для получения самого счастливого дня в месяце
@@ -67,7 +73,8 @@ def get_happiest_day_in_month(user_id):
     if result:
         date, count = result
         weekday = datetime.strptime(date, '%Y-%m-%d').strftime('%A')
-        return date, weekday, count
+        formatted_date = datetime.strptime(date, '%Y-%m-%d').strftime('%d.%m.%Y')
+        return f"{weekday}, {formatted_date}"
     return None
 
 # Функция для получения самого счастливого времени суток
@@ -90,7 +97,17 @@ def get_happiest_time_of_day(user_id):
 def get_average_daily_count_week(user_id):
     cursor.execute('SELECT COUNT(*) FROM happiness_log WHERE user_id = ? AND timestamp >= DATE(\'now\', \'-7 days\')', (user_id,))
     total_count = cursor.fetchone()[0]
-    return total_count / 7
+    cursor.execute('SELECT COUNT(DISTINCT DATE(timestamp)) FROM happiness_log WHERE user_id = ? AND timestamp >= DATE(\'now\', \'-7 days\')', (user_id,))
+    total_days = cursor.fetchone()[0]
+    return total_count / total_days if total_days > 0 else 0
+
+# Функция для получения среднего количества записей в день за месяц
+def get_average_daily_count_week(user_id):
+    cursor.execute('SELECT COUNT(*) FROM happiness_log WHERE user_id = ? AND timestamp >= DATE(\'now\', \'-30 days\')', (user_id,))
+    total_count = cursor.fetchone()[0]
+    cursor.execute('SELECT COUNT(DISTINCT DATE(timestamp)) FROM happiness_log WHERE user_id = ? AND timestamp >= DATE(\'now\', \'-30 days\')', (user_id,))
+    total_days = cursor.fetchone()[0]
+    return total_count / total_days if total_days > 0 else 0
 
 # Функция для получения среднего количества записей в день за все время
 def get_average_daily_count_all_time(user_id):
