@@ -13,7 +13,7 @@ async def get_start(message:Message, bot:Bot):
 async def get_happiness(message:Message, bot:Bot):
     try: 
         save_message(message.from_user.id, message.text)
-        await message.answer("Событие записано! Ты только что стал немного счастливее 🌟")
+        await message.answer("Событие записано!! Ты только что стал немного счастливее 🌟")
     except:
         await message.answer("Что-то пошло не так...")
 
